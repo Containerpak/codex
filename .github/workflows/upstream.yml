@@ -1,0 +1,69 @@
+# Upstream publishes its releases on GitHub and this package pins one by
+# checksum, so nothing moves until something looks. That is this job: it reads
+# the newest release, and when it differs from the pin it moves the pin and
+# pushes, which is what builds the image.
+name: Follow upstream
+
+on:
+  schedule:
+    - cron: '40 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  follow:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read the newest release
+        id: upstream
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag="$(gh release view --repo openai/codex --json tagName --jq .tagName)"
+          case "$tag" in
+            rust-v[0-9]*) ;;
+            *) echo "::error::upstream answered a tag this package cannot read"; exit 1 ;;
+          esac
+          work="$(mktemp -d)"
+          for target in x86_64-unknown-linux-musl aarch64-unknown-linux-musl; do
+            gh release download "$tag" --repo openai/codex \
+              --pattern "codex-${target}.tar.gz" --dir "$work"
+          done
+          {
+            echo "tag=$tag"
+            echo "version=${tag#rust-v}"
+            echo "amd64=$(sha256sum "$work/codex-x86_64-unknown-linux-musl.tar.gz" | cut -d" " -f1)"
+            echo "arm64=$(sha256sum "$work/codex-aarch64-unknown-linux-musl.tar.gz" | cut -d" " -f1)"
+          } >> "$GITHUB_OUTPUT"
+          rm -rf "$work"
+
+      - name: Move the pin
+        env:
+          TAG: ${{ steps.upstream.outputs.tag }}
+          VERSION: ${{ steps.upstream.outputs.version }}
+          AMD64: ${{ steps.upstream.outputs.amd64 }}
+          ARM64: ${{ steps.upstream.outputs.arm64 }}
+        run: |
+          set -euo pipefail
+          current="$(sed -n 's/^ARG CODEX_TAG=//p' Containerfile)"
+          if [ "$current" = "$TAG" ]; then
+            echo "already at $TAG"
+            exit 0
+          fi
+          sed -i \
+            -e "s/^ARG CODEX_TAG=.*/ARG CODEX_TAG=${TAG}/" \
+            -e "s/^ARG CODEX_SHA256_AMD64=.*/ARG CODEX_SHA256_AMD64=${AMD64}/" \
+            -e "s/^ARG CODEX_SHA256_ARM64=.*/ARG CODEX_SHA256_ARM64=${ARM64}/" \
+            Containerfile
+          jq --arg version "$VERSION" '.version = $version' cpak.json > cpak.json.next
+          mv cpak.json.next cpak.json
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Containerfile cpak.json
+          git commit -m "chore: follow upstream ${VERSION}"
+          git push
