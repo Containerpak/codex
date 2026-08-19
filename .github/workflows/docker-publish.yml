@@ -59,7 +59,7 @@ jobs:
       - name: Verify SDK exports
         run: |
           for platform in linux/amd64 linux/arm64; do
-            docker run --rm --platform "$platform" ghcr.io/containerpak/codex:main --version
+            docker run --rm --platform "$platform" ghcr.io/containerpak/codex:main /usr/bin/codex --version
             # The package is the only thing that updates it, so an image whose
             # tool would replace itself is a broken package and not a warning.
             docker run --rm --platform "$platform" --entrypoint sh \
