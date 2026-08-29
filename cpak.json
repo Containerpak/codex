@@ -30,11 +30,13 @@
   ],
   "idle_time": 0,
   "override": {
+    "displayX11": false,
     "socketWayland": false,
     "socketPulseAudio": false,
     "socketSshAgent": true,
     "socketCups": false,
     "socketGpgAgent": true,
+    "bluetooth": false,
     "deviceDri": false,
     "deviceKvm": false,
     "deviceShm": false,
@@ -51,14 +53,6 @@
     "openURI": false,
     "hostApplications": false,
     "filePicker": {},
-    "network": true,
-    "hostNetwork": true,
-    "process": false,
-    "userNamespaces": false,
-    "memoryMaxMB": 0,
-    "cpuQuota": 0,
-    "pidsMax": 0,
-    "asRoot": false,
     "filesystem": [
       {
         "path": "home",
@@ -67,6 +61,14 @@
     ],
     "env": [
       "CODEX_DISABLE_UPDATE_CHECK=1"
-    ]
+    ],
+    "network": true,
+    "hostNetwork": true,
+    "process": false,
+    "userNamespaces": false,
+    "memoryMaxMB": 0,
+    "cpuQuota": 0,
+    "pidsMax": 0,
+    "asRoot": false
   }
 }
