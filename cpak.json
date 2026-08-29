@@ -52,6 +52,7 @@
     "hostApplications": false,
     "filePicker": {},
     "network": true,
+    "hostNetwork": true,
     "process": false,
     "userNamespaces": false,
     "memoryMaxMB": 0,
