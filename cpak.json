@@ -3,7 +3,7 @@
   "manifest_version": "3.0",
   "name": "Codex",
   "description": "OpenAI's coding agent for the terminal.",
-  "version": "0.150.1",
+  "version": "0.151.0",
   "image": "ghcr.io/containerpak/codex@sha256:8ede554f7c4b8651971b0f6b953dd310dad2e3c8bdbf2725b1f4bd1b4c82100f",
   "binaries": [
     "/usr/bin/codex"
