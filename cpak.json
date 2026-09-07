@@ -4,7 +4,7 @@
   "name": "Codex",
   "description": "OpenAI's coding agent for the terminal.",
   "version": "0.153.4",
-  "image": "ghcr.io/containerpak/codex@sha256:b34421d21a70ba2ce7355e4901316b6719cf53d0f58e2b8a738160b96cbc9592",
+  "image": "ghcr.io/containerpak/codex@sha256:b78b00c7671a7953b199afec10e6fa62a2d20cb4175928d360cc6e1ebf441ff3",
   "binaries": [
     "/usr/bin/codex"
   ],
