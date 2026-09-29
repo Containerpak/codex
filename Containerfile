@@ -1,9 +1,9 @@
 FROM ghcr.io/containerpak/base:main
 
 ARG TARGETARCH
-ARG CODEX_TAG=rust-v0.158.0
-ARG CODEX_SHA256_AMD64=af9f5aa6e6662accf9d707cef0d9ca083880a173a9c2b6c22947edb7830e5778
-ARG CODEX_SHA256_ARM64=91e3fafe5ff845a8f685a05d04919146fb30fdc9245af1a42a2f7f239959e90c
+ARG CODEX_TAG=rust-v0.159.0
+ARG CODEX_SHA256_AMD64=6e587a08cb39599816c598b07e17b4bcbf9d41b5c1c0793a4b632b6741e9cbc0
+ARG CODEX_SHA256_ARM64=16a4e75d80e7628fa23daa3d949442fbcff955875519d7d5788f341ee85fc16d
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends ca-certificates curl && \
